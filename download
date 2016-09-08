@@ -1,0 +1,58 @@
+#!/bin/bash
+#filepath=$( cd "$(dirname "$0")";pwd)
+filepath=/home/tds/news/xml
+function download() {
+  if [ -n "$1" ]
+  then 
+     rm $filepath/$2/*
+     mkdir -p $filepath/$2
+     wget $1 -P $filepath/$2
+  fi
+}
+#tuijian
+download "http://finance.qq.com/financenews/domestic/rss_domestic.xml" "tuijian"
+
+#redian
+download "http://edu.qq.com/gaokao/rss_gaokao.xml" "redian"
+
+#guonei
+download "http://finance.qq.com/financenews/domestic/rss_domestic.xml" "guonei"
+
+#guoji
+download "http://news.qq.com/newsgj/rss_newswj.xml" "guoji"
+
+#junshi
+download "http://news.qq.com/milite/rss_milit.xml" "junshi"
+
+#beijing
+download "http://news.qq.com/bj/rss_bj.xml" "beijing"
+ 
+#caijing
+download "http://finance.qq.com/industry/industrynews/rss_industrynews.xml" "caijing"
+
+#mingxing
+download "http://ent.qq.com/newxw/rss_start.xml" "mingxing"
+
+#yule
+download "http://ent.qq.com/movie/rss_movie.xml" "yule"
+
+#tiyu
+download "http://sports.qq.com/rss_newssports.xml" "tiyu"
+
+#keji
+download "http://finance.qq.com/stock/shsgs/rss_ssgs.xml" "keji"
+
+#youxi
+download "http://games.qq.com/mobile/rss_mobile.xml" "youxi"
+
+#shehui
+download "http://news.qq.com/newssh/rss_newssh.xml" "shehui"
+
+#jiankang
+download "http://baby.qq.com/jiankang/rss_babyhl.xml" "jiankang"
+
+sed -i 's/encoding="gb2312"/encoding="UTF-8"/g' `grep 'encoding="gb2312"' $filepath -rl`
+sed -i 's/encoding="GB2312"/encoding="UTF-8"/g' `grep 'encoding="GB2312"' $filepath -rl`
+sed -i 's/encoding="GBK"/encoding="UTF-8"/g' `grep 'encoding="GBK"' $filepath -rl`
+sed -i 's/encoding="gbk"/encoding="UTF-8"/g' `grep 'encoding="gbk"' $filepath -rl`
+/home/tds/jdk1.8/bin/java -jar download.jar com.sdt.rss.RSSFile -d $filepath
