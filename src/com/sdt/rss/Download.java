@@ -161,44 +161,6 @@ public class Download {
 			return;
 		}
 		String xmlContent = HttpClientHelper.get(url,DEFAULT_CHARSET);
-		
-		if(StringUtil.isEmpty(xmlContent)){
-			System.out.println("没有获得任何内容");
-			return;
-		}
-		
-		ModelBean model =new ModelBean();
-		model.fromXML(xmlContent);
-		
-		ModelBean rss = model.getModel("rss");
-		if(rss==null) {
-			System.out.println("非RSS源文件");
-			return;
-		}
-		ModelBean channel = rss.getModel("channel");
-		if(channel==null) {
-			System.out.println("非标准RSS源文件");
-			return;
-		}
-		System.out.println(String.format("[当前频道是---%s]", channel.getString("title")));
-		
-		List<ModelBean> items = channel.getList("item");
-		
-		if(items==null || items.size() ==0) {
-			System.out.println("无新闻内容,请更换RSS源文件");
-			return;
-		}
-		
-		for(ModelBean item:items) {
-			String link = item.getString("link");
-			System.out.print(String.format("[正在处理 :%s]...", link));
-			String content = JsoupHelper.getQQ163XHBDBody(link);
-			if(!StringUtil.isEmpty(content)) {
-				System.out.println(content);
-				item.setString("body", content);
-			}
-			System.out.println(String.format("..[处理结束]"));
-		}
 		String[] temps = url.split("/");
 		String filename =url.toLowerCase();
 		if(filename.toLowerCase().startsWith("http:")) {
@@ -211,9 +173,9 @@ public class Download {
 		if(!filename.toLowerCase().endsWith(".xml")) {
 			filename+=".xml";
 		}
-		System.out.println(String.format("[文件保存目录:%s， 文件名:%s]", directory,filename));
-		boolean save=FileHelper.save(directory, filename, rss.toXml("rss"));
-		System.out.println(String.format("[....保存%s....]", save?"成功":"失败"));
+		
+		RSSFile.downloadBody(directory, filename, xmlContent);
+		
 	}
 	
 }
